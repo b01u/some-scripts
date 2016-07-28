@@ -26,13 +26,13 @@ echo $CONFIG_FILE
 DEVICE_ID=`cat $CONFIG_FILE|python -c "import sys,json;config_data = sys.stdin.read().strip();print json.loads(config_data)['device_id']"`
 echo $DEVICE_ID
 
-DM_NAME=`dmsetup ls|sed -n '1p'|awk '{print $1}'`
+DM_NAME=`dmsetup ls|grep -v skip_block_zeroing|sed -n '1p'|awk '{print $1}'`
 DM_CONFIG_OLD=`dmsetup table $DM_NAME`
 DM_CONFIG=`echo ${DM_CONFIG_OLD% *}`" $DEVICE_ID"
 echo $DM_CONFIG
 
-MOUNT_DIR='/tmp/'`python -c "import random;print random.random().__str__()[2:]"`
-DM_CREATE_NAME=`python -c "import random;print random.random().__str__()[2:]"`
+MOUNT_DIR=`mktemp -d`
+DM_CREATE_NAME=`echo ${MOUNT_DIR##*/}`
 dmsetup create $DM_CREATE_NAME --table "$DM_CONFIG"
 if [ ! -d $MOUNT_DIR ]; then
     mkdir -p $MOUNT_DIR
