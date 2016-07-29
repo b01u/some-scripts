@@ -11,7 +11,7 @@ if [ $# -ne 1 ];then
 fi
 
 CONTAINER_NAME=$1
-DOCKER_PROCESS=`ps aux|grep -i 'docker daemon'`
+DOCKER_PROCESS=`ps aux|grep -i '/usr/bin/docker'`
 if [ `echo $DOCKER_PROCESS|grep graph|wc -l` -eq 1 ]; then
     DOCKER_PATH=`echo $DOCKER_PROCESS|python -c "import sys,re;print re.findall(r\"--graph='(.*)'\",sys.stdin.read().strip())[0]"`
 else
